@@ -31,6 +31,24 @@ def get_repositories_list(github_token: str, organization: Optional[str] = None)
     if not data:
       break
     for r in data:
+      # Get fork data: is it forked, and if so, from which repo?
+      forked = r.get("fork", False)
+      forked_from = None
+      if forked:
+        parent = r.get("parent")
+        # If 'parent' not present in this response, fetch it
+        if parent is None:
+          repo_full_name = r.get("full_name")
+          if repo_full_name:
+            detail_url = f"https://api.github.com/repos/{repo_full_name}"
+            detail_resp = requests.get(detail_url, headers=headers)
+            if detail_resp.ok:
+              detail_info = detail_resp.json()
+              parent_info = detail_info.get("parent", {})
+              forked_from = parent_info.get("full_name")
+        else:
+          forked_from = parent.get("full_name") if parent else None
+
       repo_info = {
         "name": r.get("name"),
         "owner": r.get("owner", {}).get("login"),
@@ -40,6 +58,8 @@ def get_repositories_list(github_token: str, organization: Optional[str] = None)
         "description": r.get("description"),
         "stargazers_count": r.get("stargazers_count"),
         "language": r.get("language"),
+        "forked": forked,
+        "forked_from": forked_from,
       }
       repos.append(repo_info)
     if len(data) < per_page:
