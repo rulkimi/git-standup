@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -15,10 +15,17 @@ interface RepositoriesListingProps {
 const SHOW_SEARCH_THRESHOLD = 5; 
 
 export default function RepositoriesListing({ repositories }: RepositoriesListingProps) {
-  const { setRepositories } = useRepositories();
+  // Use the global repositories context so it syncs with the provider/localStorage
+  const { repositories: selectedRepos, setRepositories } = useRepositories();
 
   const [search, setSearch] = useState("");
-  const [checkedRepos, setCheckedRepos] = useState<string[]>([]);
+
+  // Sync checkedRepo state with the global context, and update whenever selectedRepos changes
+  const [checkedRepos, setCheckedRepos] = useState<string[]>(selectedRepos);
+
+  useEffect(() => {
+    setCheckedRepos(selectedRepos);
+  }, [selectedRepos]);
 
   const filteredRepos = useMemo(() => {
     if (!search) return repositories;
@@ -32,17 +39,16 @@ export default function RepositoriesListing({ repositories }: RepositoriesListin
     );
   }, [repositories, search]);
 
-  // Allow checking/unchecking multiple repos
+  // Allow checking/unchecking multiple repos, and sync to context/localStorage
   const handleCheckboxChange = (repoName: string) => {
+    let newChecked: string[];
     if (checkedRepos.includes(repoName)) {
-      const newChecked = checkedRepos.filter((name) => name !== repoName);
-      setCheckedRepos(newChecked);
-      setRepositories(newChecked);
+      newChecked = checkedRepos.filter((name) => name !== repoName);
     } else {
-      const newChecked = [...checkedRepos, repoName];
-      setCheckedRepos(newChecked);
-      setRepositories(newChecked);
+      newChecked = [...checkedRepos, repoName];
     }
+    setCheckedRepos(newChecked);
+    setRepositories(newChecked);
   };
 
   return (

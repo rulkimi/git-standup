@@ -181,7 +181,8 @@ def summarize_commits_from_repos(
   author: str,
   start_date: str = Query(..., description="Start date in YYYY-MM-DD format"),
   end_date: str = Query(..., description="End date in YYYY-MM-DD format"),
-  organization: Optional[str] = None
+  organization: Optional[str] = None,
+  extra_info: Optional[str] = Body(None, description="Any extra information or context to add to the standup prompt")
 ):
   try:
     start_dt = datetime.strptime(start_date, "%Y-%m-%d").replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)
@@ -221,13 +222,21 @@ def summarize_commits_from_repos(
         "Commit messages:\n" +
         "\n".join(f"- {msg}" for msg in project["commit_messages"])
       )
-    prompt = (
+    base_prompt = (
       "You are helping to write a standup summary. For each project below, read the commit messages and combine related work into a concise summary suitable for a standup meeting, using natural language rather than just a list. If several commits are related, feel free to combine them into a single summarized task. Reply with a JSON containing each project and, for each, a list of concise standup-style sentences that capture the work completed.\n"
       "Your output must comply with this schema:\n\n"
       '{ "projects": [ { "name": "project_name", "tasks": ["Standup-style summary sentence 1", "Summary sentence 2", ...] }, ... ] }\n\n'
       "Here are the projects and their commit messages:\n"
       f"{chr(10).join(prompt_projects)}"
     )
+
+    # Add user provided info to the prompt if any
+    if extra_info:
+      prompt = (
+        f"{base_prompt}\n\nAdditional user-provided information (incorporate or consider in the standup summary as relevant):\n{extra_info}\n"
+      )
+    else:
+      prompt = base_prompt
 
     summary = get_ai_response(prompt)
     return APIResponse(
