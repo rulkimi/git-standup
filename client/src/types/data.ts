@@ -21,3 +21,12 @@ export interface Repository {
   forked: boolean;
   forked_from: string | null;
 };
+
+export interface StandupTask {
+  name: string;
+  tasks: string[];
+}
+
+export interface StandupSummary {
+  projects: StandupTask[];
+}

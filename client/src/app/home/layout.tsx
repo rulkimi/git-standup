@@ -2,6 +2,7 @@
 
 import Header from "@/components/header";
 import { RepositoriesProvider } from "@/components/providers/repositories-provider";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { SessionProvider, SessionProviderProps } from "next-auth/react";
 import { ReactNode } from "react";
@@ -18,10 +19,13 @@ export default function PortalLayout({ generate, repositories, session }: Portal
       <Header />
       <main className="max-w-5xl mx-auto px-6 py-4">
           <RepositoriesProvider>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {repositories}
+            <Dialog>
+              {/* {repositories} */}
               {generate}
-            </div>
+              <DialogContent>
+                {repositories}
+              </DialogContent>
+            </Dialog>
           </RepositoriesProvider>
       </main>
     </SessionProvider>

@@ -1,4 +1,4 @@
-import fetchRepositoryList from "@/actions/github";
+import { fetchRepositoryList } from "@/actions/github";
 import type { Repository } from "@/types/data";
 import RepositoriesListing from "./_components/repositories-listing";
 

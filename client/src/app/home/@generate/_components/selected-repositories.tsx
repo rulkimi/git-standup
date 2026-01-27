@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRepositories } from "@/components/providers/repositories-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 const MAX_SHOWN = 5;
 
@@ -61,6 +62,15 @@ export default function SelectedRepositories() {
             Show less
           </Button>
         )}
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            className="px-2 py-1 text-xs font-medium rounded ml-1"
+          >
+            Select more
+          </Button>
+        </DialogTrigger>
       </div>
     </div>
   );
