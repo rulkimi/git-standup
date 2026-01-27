@@ -173,8 +173,10 @@ async function saveStandupSummary(summary: StandupSummary) {
 
 export default function GenerateStandup() {
   const { repositories } = useRepositories();
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  // Set today's date as default for start and end dates
+  const today = endOfToday();
+  const [startDate, setStartDate] = useState<Date | undefined>(today);
+  const [endDate, setEndDate] = useState<Date | undefined>(today);
   const [startCalendarOpen, setStartCalendarOpen] = useState(false);
   const [endCalendarOpen, setEndCalendarOpen] = useState(false);
   const [info, setInfo] = useState("");
@@ -282,12 +284,10 @@ export default function GenerateStandup() {
       className={cn(
         "grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6",
         "w-full",
-        "h-[70dvh]" // Ensures the grid is at least this height
       )}
-      style={{ minHeight: "min(400px, 60dvh)" }} // fallback for old browsers
     >
       {/* LEFT: Inputs */}
-      <div className="border rounded-md bg-background p-4 flex flex-col gap-4 h-full">
+      <div className="border rounded-md bg-background p-4 flex flex-col gap-4 h-fit">
         <div className="flex flex-col gap-2">
           <label className="text-xs text-muted-foreground font-semibold uppercase">
             Start and End Date
@@ -375,7 +375,7 @@ export default function GenerateStandup() {
         </div>
         <Button
           onClick={handleGenerate}
-          className="self-start px-4 py-2"
+          className="self-start px-4 py-2 w-full"
           disabled={!startDate || !endDate || loading}
         >
           {loading ? "Generating..." : "Generate"}
