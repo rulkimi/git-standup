@@ -1,15 +1,21 @@
 import { Button } from "@/components/ui/button";
 import type { StandupSummary } from "@/types/data";
+import { useStandup } from "./standup-context";
+import { standupToText } from "./standup-utils";
 
 interface ViewStandupSummaryProps {
 	summary: StandupSummary;
-	onCopy?: () => void;
 }
 
-export function ViewStandupSummary({ summary, onCopy }: ViewStandupSummaryProps) {
+export function ViewStandupSummary({ summary }: ViewStandupSummaryProps) {
+  const { copyToClipboard } = useStandup(); 
 	const filteredProjects = summary.projects.filter(
 		(project) => Array.isArray(project.tasks) && project.tasks.some(t => t.trim() !== "")
 	);
+
+  function handleCopy() {
+    copyToClipboard(standupToText(summary));
+  }
 
 	return (
 		<div className="flex flex-col h-full w-full">
@@ -32,17 +38,15 @@ export function ViewStandupSummary({ summary, onCopy }: ViewStandupSummaryProps)
 				</div>
 			)}
 			<div className="flex items-center justify-end mt-2 gap-2">
-				{onCopy && (
-					<Button
-						size="sm"
-						variant="secondary"
-						onClick={onCopy}
-						className="px-3"
-						type="button"
-					>
-						Copy
-					</Button>
-				)}
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={handleCopy}
+          className="px-3"
+          type="button"
+        >
+          Copy
+        </Button>
 			</div>
 		</div>
 	);

@@ -5,19 +5,14 @@ import { EditStandupSummary } from "./generate-standup/edit-standup-summary";
 import { EmptyResult } from "./generate-standup/empty-result";
 import { useStandup } from "./generate-standup/standup-context";
 import { ViewStandupSummary } from "./generate-standup/view-standup-summary";
-import { standupToText } from "./generate-standup/standup-utils";
 
 export function StandupResultPanel() {
 	const {
 		result,
 		editing,
 		editText,
-		saveLoading,
 		saveError,
 		startEdit,
-		updateEditText,
-		cancelEdit,
-		saveSummary,
 		copyToClipboard,
 	} = useStandup();
 
@@ -27,10 +22,7 @@ export function StandupResultPanel() {
 				<EmptyResult />
 			) : !editing ? (
 				<>
-					<ViewStandupSummary
-						summary={result}
-						onCopy={() => copyToClipboard(standupToText(result))}
-					/>
+					<ViewStandupSummary summary={result} />
 					<div className="mt-2 flex flex-col items-end gap-2">
 						<Button
 							size="sm"

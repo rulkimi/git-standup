@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DateRangePicker } from "./date-range-picker";
 import { useStandup } from "./standup-context";
+import { Spinner } from "@/components/ui/spinner";
 
 export function StandupInputForm() {
 	const {
@@ -37,6 +38,7 @@ export function StandupInputForm() {
 				className="self-start px-4 py-2 w-full"
 				disabled={!startDate || !endDate || loading}
 			>
+				{loading && <Spinner />}
 				{loading ? "Generating..." : "Generate"}
 			</Button>
 			{error && (

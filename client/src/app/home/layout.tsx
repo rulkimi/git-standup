@@ -3,7 +3,6 @@
 import Header from "@/components/header";
 import { RepositoriesProvider } from "@/components/providers/repositories-provider";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
 import { SessionProvider, SessionProviderProps } from "next-auth/react";
 import { ReactNode } from "react";
 
