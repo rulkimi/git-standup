@@ -1,5 +1,5 @@
 import GenerateStandup from "./_components/generate-standup";
-import SelectedRepositories from "./_components/selected-repositories";
+import SelectedRepositories from "./_components/generate-standup/selected-repositories";
 
 export default function GenerateSection() {
 
