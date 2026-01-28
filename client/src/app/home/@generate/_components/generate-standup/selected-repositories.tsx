@@ -5,6 +5,7 @@ import { useRepositories } from "@/components/providers/repositories-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MAX_SHOWN = 5;
 
@@ -14,8 +15,13 @@ export default function SelectedRepositories() {
 
   if (repositories.length === 0) {
     return (
-      <div className="p-4 rounded-md border bg-background text-muted-foreground text-sm">
-        No repositories selected.
+      <div className="p-4 rounded-md border bg-background text-muted-foreground text-sm flex items-center justify-between gap-2">
+        <span>No repositories selected.</span>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="outline" className="ml-2">
+            + Add repo
+          </Button>
+        </DialogTrigger>
       </div>
     );
   }
@@ -33,15 +39,25 @@ export default function SelectedRepositories() {
         </span>
       </div>
       <div className="flex flex-wrap gap-2 items-center">
-        {shown.map((repo) => (
-          <Badge
-            key={repo}
-            variant="secondary"
-            className="px-2 py-1 text-sm font-medium rounded"
-          >
-            {repo}
-          </Badge>
-        ))}
+        <AnimatePresence initial={false}>
+          {shown.map((repo) => (
+            <motion.div
+              key={repo}
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.94 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Badge
+                variant="secondary"
+                className="px-2 py-1 text-sm font-medium rounded"
+              >
+                {repo}
+              </Badge>
+            </motion.div>
+          ))}
+        </AnimatePresence>
         {!showAll && remaining > 0 && (
           <Button
             variant="ghost"
